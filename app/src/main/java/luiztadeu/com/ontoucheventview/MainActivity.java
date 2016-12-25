@@ -1,5 +1,6 @@
 package luiztadeu.com.ontoucheventview;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -7,25 +8,59 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private LinearLayout linearLayoutMove;
+    private Activity mActivity;
     private float dX, dY, defaultPosition, position;
     int lastAction;
     boolean isUp = false;
+    private ListAdapter adapter;
     private DisplayMetrics displayMetrics;
+    private ListView listView;
+    private List<String> stringList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        linearLayoutMove = (LinearLayout) findViewById(R.id.linear_layout_move);
+        mActivity = this;
+        linearLayoutMove = (LinearLayout) findViewById(R.id.linear_layout);
+        listView = (ListView) findViewById(R.id.listview1);
+
+        stringList = new ArrayList<>();
+        stringList.add("PSOne");
+        stringList.add("PS2");
+        stringList.add("PS3");
+        stringList.add("PSVita");
+        stringList.add("PS4");
+        stringList.add("Xbox");
+        stringList.add("Xbox360");
+        stringList.add("XboxOne");
+        stringList.add("PSOne");
+        stringList.add("PS2");
+        stringList.add("PS3");
+        stringList.add("PSVita");
+        stringList.add("PS4");
+        stringList.add("Xbox");
+        stringList.add("Xbox360");
+        stringList.add("XboxOne");
+
+        adapter = new ListAdapter(mActivity, stringList);
+        listView.setAdapter(adapter);
         defaultPosition = linearLayoutMove.getMeasuredHeight();
         linearLayoutMove.setOnTouchListener(this);
 
         displayMetrics = getResources().getDisplayMetrics();
+
+        linearLayoutMove.setY((displayMetrics.heightPixels * 80) / 100);
     }
 
     @Override
@@ -42,10 +77,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                 if (!isUp){
                     isUp = true;
-                    linearLayoutMove.animate().setDuration(300).translationY(displayMetrics.heightPixels / 4);
+                    linearLayoutMove.animate().setDuration(300).translationY((displayMetrics.heightPixels * 35
+                    ) / 100);// 25 porcent
                 }else if (isUp){
                     isUp = false;
-                    linearLayoutMove.animate().setDuration(300).translationY(displayMetrics.heightPixels * 4);
+                    linearLayoutMove.animate().setDuration(300).translationY((displayMetrics.heightPixels * 80
+                    ) / 100);
                 }
 
                 //linearLayoutMove.setY(displayMetrics.heightPixels / 4);
