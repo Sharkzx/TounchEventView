@@ -1,6 +1,7 @@
 package luiztadeu.com.ontoucheventview;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,10 @@ import java.util.StringTokenizer;
 
 public class ListAdapter extends BaseAdapter{
 
-    private Activity mActivity;
+    private Context mActivity;
     private List<String> list;
 
-    public ListAdapter(Activity mActivity, List<String> list) {
+    public ListAdapter(Context mActivity, List<String> list) {
         this.mActivity = mActivity;
         this.list = list;
     }
