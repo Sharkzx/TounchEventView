@@ -18,19 +18,19 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
 
     private LinearLayout linearLayoutMove;
     private Activity mActivity;
-    private float dX, dY, position;
+    private float dX, dY;
+    private int position = dpToPx(460);
     int lastAction;
     boolean isUp = false;
     private ListAdapter adapter;
     private DisplayMetrics displayMetrics;
     private ListView listView;
-    private List<String> stringList;
+    private ArrayList<String> stringList;
 
     public ListDropUp(Context context) {
         super(context);
@@ -50,63 +50,60 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
         linearLayoutMove = (LinearLayout) view.findViewById(R.id.linear_layout);
         listView = (ListView) view.findViewById(R.id.listview1);
         displayMetrics = getResources().getDisplayMetrics();
-        listView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (displayMetrics.heightPixels * 40) / 100));
+        listView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));//(displayMetrics.heightPixels * 40) / 100));
 
         stringList = new ArrayList<>();
-        stringList.add("PSOne");
-        stringList.add("PS2");
-        stringList.add("PS3");
-        stringList.add("PSVita");
-        stringList.add("PS4");
-        stringList.add("Xbox");
-        stringList.add("Xbox360");
-        stringList.add("XboxOne");
-        stringList.add("PSOne");
-        stringList.add("PS2");
-        stringList.add("PS3");
-        stringList.add("PSVita");
-        stringList.add("PS4");
-        stringList.add("Xbox");
-        stringList.add("Xbox360");
-        stringList.add("XboxOne");
+        stringList.add("1");
+        stringList.add("2");
+        stringList.add("3");
+        stringList.add("4");
+        stringList.add("5");
+        stringList.add("6");
+        stringList.add("7");
+        stringList.add("8");
+        stringList.add("9");
+        stringList.add("10");
+        stringList.add("11");
+        stringList.add("12");
+        stringList.add("13");
+        stringList.add("14");
+        stringList.add("15");
+        stringList.add("16");
 
         adapter = new ListAdapter(mActivity, stringList);
         listView.setAdapter(adapter);
         linearLayoutMove.setOnTouchListener(this);
-        linearLayoutMove.setY((displayMetrics.heightPixels * 80) / 100);
+        linearLayoutMove.setY(displayMetrics.heightPixels - (displayMetrics.heightPixels - position));
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        position = view.getY();
-
         switch (motionEvent.getActionMasked()) {
 //
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_UP:
                 dX = (int) view.getX() - motionEvent.getRawX();
                 dY = (int) view.getY() - motionEvent.getRawY();
                 lastAction = MotionEvent.ACTION_DOWN;
 
                 if (!isUp){
                     isUp = true;
-                    linearLayoutMove.animate().setDuration(300).translationY(listView.getHeight() - 50);
+                    linearLayoutMove.animate().setDuration(300).translationY(0);
+                    //linearLayoutMove.animate().setDuration(300).translationY(listView.getHeight() - 50);
                 }else if (isUp){
                     isUp = false;
-                    linearLayoutMove.animate().setDuration(300).translationY(listView.getHeight() * 2);//(displayMetrics.heightPixels * 80) / 100
+                    linearLayoutMove.animate().setDuration(300).translationY(displayMetrics.heightPixels - (displayMetrics.heightPixels - position));//(displayMetrics.heightPixels * 80) / 100
                 }
 
                 //linearLayoutMove.setY(displayMetrics.heightPixels / 4);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (dY == (displayMetrics.heightPixels / 2)){
-
-                }
-
                 String s = String.valueOf((int) view.getY());
-                view.setY(motionEvent.getRawY() + dY);
                 Log.d("Eixo Y", s);
+//                if (position >= 0)
+//                    linearLayoutMove.setTranslationY(position);
+                view.setTranslationY((int)motionEvent.getRawY() + dY);
                 break;
 
 //            case MotionEvent.ACTION_UP:
@@ -121,5 +118,12 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
 
         return true;
     }
+
+    private int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+
 }
 

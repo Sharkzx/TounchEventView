@@ -1,18 +1,13 @@
 package luiztadeu.com.ontoucheventview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by Shark on 24/12/2016.
@@ -48,10 +43,11 @@ public class ListAdapter extends BaseAdapter{
 
         if ( convertView == null){
             convertView = LayoutInflater.from(mActivity).inflate(android.R.layout.simple_list_item_1, null);
-
-            TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
-            textView.setText(list.get(position));
         }
+
+        TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+        textView.setText(list.get(position));
+
         return convertView;
     }
 }
