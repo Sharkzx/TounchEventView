@@ -22,7 +22,6 @@ import java.util.ArrayList;
 public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
 
     private LinearLayout linearLayoutMove;
-    private Activity mActivity;
     private float dX, dY;
     private int position = dpToPx(460);
     int lastAction;
@@ -30,6 +29,7 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
     private ListAdapter adapter;
     private DisplayMetrics displayMetrics;
     private ListView listView;
+    private LinearLayout rootLayout;
     private ArrayList<String> stringList;
 
     public ListDropUp(Context context) {
@@ -47,6 +47,7 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
     public void init(Activity mActivity){
 
         View view = LayoutInflater.from(mActivity).inflate(R.layout.activity_main, this);
+        rootLayout = (LinearLayout) view.findViewById(R.id.root_layout);
         linearLayoutMove = (LinearLayout) view.findViewById(R.id.linear_layout);
         listView = (ListView) view.findViewById(R.id.listview1);
         displayMetrics = getResources().getDisplayMetrics();
@@ -89,10 +90,12 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
                 if (!isUp){
                     isUp = true;
                     linearLayoutMove.animate().setDuration(300).translationY(0);
+                    rootLayout.animate().setDuration(300).alpha(1.0f);
                     //linearLayoutMove.animate().setDuration(300).translationY(listView.getHeight() - 50);
                 }else if (isUp){
                     isUp = false;
                     linearLayoutMove.animate().setDuration(300).translationY(displayMetrics.heightPixels - (displayMetrics.heightPixels - position));//(displayMetrics.heightPixels * 80) / 100
+                    rootLayout.animate().setDuration(300).alpha(0.0f);
                 }
 
                 //linearLayoutMove.setY(displayMetrics.heightPixels / 4);
@@ -103,7 +106,6 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
                 Log.d("Eixo Y", s);
 //                if (position >= 0)
 //                    linearLayoutMove.setTranslationY(position);
-                view.setTranslationY((int)motionEvent.getRawY() + dY);
                 break;
 
 //            case MotionEvent.ACTION_UP:
