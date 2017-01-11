@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -76,20 +77,28 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
         //rootLayout.setOnTouchListener(this);
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private int mLastFirstVisibleItem;
+            private boolean isDrop = false;
+
             @Override
             public void onScrollStateChanged(AbsListView absListView, int scrollState) {
 
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    listView.setOnTouchListener(new OnTouchListener() {
+            }
 
-                        @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
+                listView.setOnTouchListener(new OnTouchListener() {
+
+
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (!isDrop) {
                             switch (motionEvent.getActionMasked()) {
                                 case MotionEvent.ACTION_UP:
-
                                     if (!isUp) {
                                         isUp = true;
+                                        isDrop = true;
                                         if (listView.getMeasuredHeight() < displayMetrics.heightPixels) {
                                             setHeightAnimation(listView.getMeasuredHeight(), displayMetrics.heightPixels);
                                         }
@@ -101,31 +110,33 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
                                         //listView.animate().setDuration(300).translationY(displayMetrics.heightPixels - (displayMetrics.heightPixels - position));//(displayMetrics.heightPixels * 80) / 100
                                         //rootLayout.animate().setDuration(300).alpha(0.0f);
                                     }
-
                                     break;
 
                                 case MotionEvent.ACTION_MOVE:
-                                    if (listView.getFirstVisiblePosition() == 0) {
-                                        ViewGroup.LayoutParams params = listView.getLayoutParams();
-                                        params.height = (int) (displayMetrics.heightPixels - motionEvent.getRawY());
-                                        listView.setLayoutParams(params);
-
-                                    } else {
-                                        return false;
-                                    }
-
+                                    ViewGroup.LayoutParams params = listView.getLayoutParams();
+                                    params.height = (int) (displayMetrics.heightPixels - (motionEvent.getRawY() + (motionEvent.getY() - listView.getMeasuredHeight())));
+                                    listView.setLayoutParams(params);
+                                    listView.invalidate();
                                     break;
                             }
-
                             return true;
                         }
-                    });
+                        return false;
+                    }
+                });
+
+                if (mLastFirstVisibleItem < firstVisibleItem) {
+                    Log.i("SCROLLING DOWN", "TRUE");
+
                 }
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-
+                if (mLastFirstVisibleItem > firstVisibleItem) {
+                    Log.i("SCROLLING UP", "TRUE");
+                    if (firstVisibleItem == 0) {
+                        isDrop = false;
+                        listView.setSelection(0);
+                    }
+                }
+                mLastFirstVisibleItem = firstVisibleItem;
             }
         });
     }
@@ -158,7 +169,7 @@ public class ListDropUp extends RelativeLayout implements View.OnTouchListener {
                     params.height = (int) (displayMetrics.heightPixels - motionEvent.getRawY());
                     listView.setLayoutParams(params);
 
-                } else  {
+                } else {
                     return false;
                 }
 
