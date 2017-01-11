@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import luiztadeu.com.ontoucheventview.R;
 
@@ -33,6 +34,8 @@ public class DropUpCardAdapter extends RecyclerView.Adapter<DropUpCardAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
+
+        private TextView text1;
 
         public ViewHolder(View itemView) {
             super(itemView);
