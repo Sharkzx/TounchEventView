@@ -3,21 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/listview1"
+    <luiztadeu.com.ontoucheventview.ListDropUp
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent">
-    </ListView>
+        android:layout_height="wrap_content"
+        android:id="@+id/listDropUp">
 
-    <LinearLayout
-        android:id="@+id/root_linear"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:alpha="0.5"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/black"
-        android:orientation="horizontal" />
+    </luiztadeu.com.ontoucheventview.ListDropUp>
 
 </RelativeLayout>

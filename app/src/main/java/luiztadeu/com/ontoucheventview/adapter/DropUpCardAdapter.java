@@ -1,10 +1,13 @@
 package luiztadeu.com.ontoucheventview.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.List;
 
 import luiztadeu.com.ontoucheventview.R;
 
@@ -13,6 +16,14 @@ import luiztadeu.com.ontoucheventview.R;
  */
 
 public class DropUpCardAdapter extends RecyclerView.Adapter<DropUpCardAdapter.ViewHolder> {
+
+    private Context context;
+    private List<String> lista;
+
+    public DropUpCardAdapter(Context context, List<String> lista) {
+        this.context = context;
+        this.lista = lista;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -26,11 +37,12 @@ public class DropUpCardAdapter extends RecyclerView.Adapter<DropUpCardAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        holder.text1.setText(lista.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return lista.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -39,7 +51,13 @@ public class DropUpCardAdapter extends RecyclerView.Adapter<DropUpCardAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
+            text1 = (TextView) itemView.findViewById(R.id.textview_nome);
+
         }
+    }
+
+    public void setList(List<String> list){
+        lista = list;
     }
 
 }

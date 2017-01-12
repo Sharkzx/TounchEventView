@@ -7,6 +7,8 @@ package luiztadeu.com.ontoucheventview;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,22 +16,18 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
 
 public class ListDropUp extends RelativeLayout {
 
-    private float dX, dY;
-    boolean isUp = false;
-    private ListAdapter adapter;
+    private float lastposition;
+    boolean isUp, isLastposition = false;
     private DisplayMetrics displayMetrics;
-    private ListView listView;
+    private LinearLayout backgroundLinear;
     private LinearLayout rootLayout;
-    private ArrayList<String> stringList;
+    private RecyclerView recycleView;
+    private LinearLayoutManager linearLayoutManager;
 
     public ListDropUp(Context context) {
         super(context);
@@ -43,83 +41,76 @@ public class ListDropUp extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(final Activity mActivity) {
+    public void init(final Activity mActivity, RecyclerView.Adapter adapter) {
+        final View view = LayoutInflater.from(mActivity).inflate(R.layout.drop_up_main, this);
 
-        final View view = LayoutInflater.from(mActivity).inflate(R.layout.activity_main, this);
         rootLayout = (LinearLayout) view.findViewById(R.id.root_linear);
-//        linearLayoutMove = (LinearLayout) view.findViewById(R.id.linear_layout);
-        listView = (ListView) view.findViewById(R.id.listview1);
+        backgroundLinear = (LinearLayout) view.findViewById(R.id.background_linear);
         displayMetrics = getResources().getDisplayMetrics();
-        //listView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));//(displayMetrics.heightPixels * 40) / 100));
+        recycleView = (RecyclerView) view.findViewById(R.id.recycle_view);
+        recycleView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(mActivity);
+        recycleView.setLayoutManager(linearLayoutManager);
+        recycleView.setAdapter(adapter);
 
-        stringList = new ArrayList<>();
-        stringList.add("1");
-        stringList.add("2");
-        stringList.add("3");
-        stringList.add("4");
-        stringList.add("5");
-        stringList.add("6");
-        stringList.add("7");
-        stringList.add("8");
-        stringList.add("9");
-        stringList.add("10");
-        stringList.add("11");
-        stringList.add("12");
-        stringList.add("13");
-        stringList.add("14");
-        stringList.add("15");
-        stringList.add("16");
-
-        adapter = new ListAdapter(mActivity, stringList);
-        listView.setAdapter(adapter);
 
         rootLayout.setOnTouchListener(new OnTouchListener() {
-            private boolean isDrop = false;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                //if (!isDrop) {
+                if (!isLastposition){
+                    lastposition = rootLayout.getY();
+                    isLastposition = true;
+                }
                     switch (motionEvent.getActionMasked()) {
                         case MotionEvent.ACTION_UP:
                             if (!isUp) {
                                 isUp = true;
-                                isDrop = true;
-                                if (listView.getMeasuredHeight() < displayMetrics.heightPixels) {
-                                    setHeightAnimation(listView.getMeasuredHeight(), displayMetrics.heightPixels);
+                                if (recycleView.getMeasuredHeight() < displayMetrics.heightPixels) {
+                                    setHeightAnimation(recycleView, recycleView.getMeasuredHeight(), displayMetrics.heightPixels);
+                                    setHeightAnimation(backgroundLinear, backgroundLinear.getMeasuredHeight(), displayMetrics.heightPixels);
                                     rootLayout.setY(0);
                                 }
                                 //rootLayout.animate().setDuration(300).alpha(1.0f);
                                 //linearLayoutMove.animate().setDuration(300).translationY(listView.getHeight() - 50);
                             } else if (isUp) {
                                 isUp = false;
-                                setHeightAnimation(listView.getMeasuredHeight(), -displayMetrics.heightPixels);
+                                setHeightAnimation(recycleView, recycleView.getMeasuredHeight(), displayMetrics.heightPixels /12);
+                                setHeightAnimation(backgroundLinear, backgroundLinear.getMeasuredHeight(), displayMetrics.heightPixels /12);
                                 //listView.animate().setDuration(300).translationY(displayMetrics.heightPixels - (displayMetrics.heightPixels - position));//(displayMetrics.heightPixels * 80) / 100
                                 //rootLayout.animate().setDuration(300).alpha(0.0f);
-                                rootLayout.setY(displayMetrics.heightPixels - 380);
+                                rootLayout.setY(lastposition);
                             }
                             break;
 
                         case MotionEvent.ACTION_MOVE:
-                            ViewGroup.LayoutParams params = listView.getLayoutParams();
+
+                            ViewGroup.LayoutParams paramsBack = backgroundLinear.getLayoutParams();
+                            paramsBack.height = (int) (displayMetrics.heightPixels - (motionEvent.getRawY() - 50));
+                            backgroundLinear.setLayoutParams(paramsBack);
+                            float alpha = (float) (paramsBack.height / 1000.0);
+                            backgroundLinear.setAlpha(alpha);
+
+                            ViewGroup.LayoutParams params = recycleView.getLayoutParams();
                             params.height = (int) (displayMetrics.heightPixels - (motionEvent.getRawY() - 50));
-                            listView.setLayoutParams(params);
+                            recycleView.setLayoutParams(params);
                             break;
                     }
                     return true;
                 }
-//                return false;
-//            }
         });
 
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        recycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             private int mLastFirstVisibleItem;
-
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 
                 if (firstVisibleItem != 0){
                     rootLayout.setVisibility(GONE);
@@ -131,65 +122,24 @@ public class ListDropUp extends RelativeLayout {
                     Log.i("SCROLLING DOWN", "TRUE");
 
                 }
-                if (mLastFirstVisibleItem > firstVisibleItem) {
-                    Log.i("SCROLLING UP", "TRUE");
-                    if (firstVisibleItem == 0) {
-                        //isDrop = false;
-                        listView.setSelection(0);
-                    }
-                }
                 mLastFirstVisibleItem = firstVisibleItem;
             }
         });
+
     }
 
-//    @Override
-//    public boolean onTouch(View view, MotionEvent motionEvent) {
-//
-//        switch (motionEvent.getActionMasked()) {
-//            case MotionEvent.ACTION_UP:
-//
-//                if (!isUp) {
-//                    isUp = true;
-//                    if (listView.getMeasuredHeight() < displayMetrics.heightPixels) {
-//                        setHeightAnimation(listView.getMeasuredHeight(), displayMetrics.heightPixels);
-//                    }
-//                    //rootLayout.animate().setDuration(300).alpha(1.0f);
-//                    //linearLayoutMove.animate().setDuration(300).translationY(listView.getHeight() - 50);
-//                } else if (isUp) {
-//                    isUp = false;
-//                    setHeightAnimation(listView.getMeasuredHeight(), -displayMetrics.heightPixels);
-//                    //listView.animate().setDuration(300).translationY(displayMetrics.heightPixels - (displayMetrics.heightPixels - position));//(displayMetrics.heightPixels * 80) / 100
-//                    //rootLayout.animate().setDuration(300).alpha(0.0f);
-//                }
-//
-//                break;
-//
-//            case MotionEvent.ACTION_MOVE:
-//                if (listView.getFirstVisiblePosition() != 0) {
-//                    ViewGroup.LayoutParams params = listView.getLayoutParams();
-//                    params.height = (int) (displayMetrics.heightPixels - motionEvent.getRawY());
-//                    listView.setLayoutParams(params);
-//                } else {
-//                    return false;
-//                }
-//
-//                break;
-//        }
-//        return true;
-//    }
-
-
-    private void setHeightAnimation(int fromHeight, int toHeight) {
+    private void setHeightAnimation(final View view, int fromHeight, int toHeight) {
         ValueAnimator valueAnimator = ValueAnimator.ofInt(fromHeight, toHeight);
         valueAnimator.setDuration(400);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int val = (Integer) animation.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = listView.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                 layoutParams.height = val;
-                listView.setLayoutParams(layoutParams);
+                view.setLayoutParams(layoutParams);
+                float alpha = (float) (layoutParams.height / 1000.0);
+                backgroundLinear.setAlpha(alpha < 0.200 ? 0 : alpha);
             }
         });
         valueAnimator.start();
@@ -200,6 +150,5 @@ public class ListDropUp extends RelativeLayout {
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
-
 }
 

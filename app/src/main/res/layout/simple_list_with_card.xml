@@ -1,67 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="5dp"
-    card_view:cardUseCompatPadding="true"
-    card_view:cardPreventCornerOverlap="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:layout_height="wrap_content">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardCornerRadius="8dp"
+        card_view:cardElevation="5dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <ImageView
-                android:layout_marginTop="10dp"
                 android:id="@+id/imageview_carro_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher"/>
+                android:layout_marginTop="10dp"
+                android:src="@mipmap/ic_launcher" />
 
-            <ProgressBar
-                android:id="@+id/progress_bar_img"
-                style="@android:style/Widget.ProgressBar.Small"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textview_nome"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|center_horizontal"
-                android:visibility="invisible"/>
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="nome"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-        </FrameLayout>
-        <TextView
-            android:id="@+id/textview_nome_carro"
-            android:text="nome"
-            android:padding="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textAppearance="?android:textAppearanceMedium"/>
+            <TextView
+                android:id="@+id/textview_desc_carro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:padding="10dp"
+                android:text="descrição"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/textview_desc_carro"
-            android:text="descrição"
-            android:padding="10dp"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textAppearance="?android:textAppearanceMedium"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:background="@color/colorPrimaryDark">
         </LinearLayout>
 
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
-</android.support.v7.widget.CardView>
+</RelativeLayout>
