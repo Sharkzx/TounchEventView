@@ -29,6 +29,10 @@ public class ListDropUp extends RelativeLayout {
     private RecyclerView recycleView;
     private LinearLayoutManager linearLayoutManager;
 
+    private Activity mActivity;
+    private RecyclerView.Adapter adapter;
+    private int backGroundColor;
+
     public ListDropUp(Context context) {
         super(context);
     }
@@ -41,11 +45,29 @@ public class ListDropUp extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(final Activity mActivity, RecyclerView.Adapter adapter) {
+    public void setPropriets(Activity mActivity, RecyclerView.Adapter adapter, int backGroundColor) {
+        this.adapter = adapter;
+        this.mActivity = mActivity;
+        this.backGroundColor = backGroundColor;
+
+        init();
+    }
+
+    public void setPropriets(Activity mActivity, RecyclerView.Adapter adapter) {
+        this.adapter = adapter;
+        this.mActivity = mActivity;
+
+        init();
+    }
+
+    public void init() {
         final View view = LayoutInflater.from(mActivity).inflate(R.layout.drop_up_main, this);
 
         rootLayout = (LinearLayout) view.findViewById(R.id.root_linear);
         backgroundLinear = (LinearLayout) view.findViewById(R.id.background_linear);
+        if (backGroundColor != 0)
+        backgroundLinear.setBackgroundColor(backGroundColor);
+        else backgroundLinear.setBackgroundColor(mActivity.getResources().getColor(R.color.colorPrimary));
         displayMetrics = getResources().getDisplayMetrics();
         recycleView = (RecyclerView) view.findViewById(R.id.recycle_view);
         recycleView.setHasFixedSize(true);
@@ -150,5 +172,6 @@ public class ListDropUp extends RelativeLayout {
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
+
 }
 

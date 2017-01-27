@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         stringList.add("16");
 
         listDropUp = (ListDropUp) findViewById(R.id.listDropUp);
-        listDropUp.init(mActivity, new DropUpCardAdapter(mActivity, stringList));
+        listDropUp.setPropriets(mActivity, new DropUpCardAdapter(mActivity, stringList), getResources().getColor(R.color.colorAccent));
 
     }
 
